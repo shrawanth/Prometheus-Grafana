@@ -73,3 +73,38 @@ kubectl port-forward service/monitoring-grafana -n monitoring 8080:80
 ```bash
 kubectl port-forward service/alertmanager-operated -n monitoring 9093:9093
 ```
+## 🐳 Step 5. Build & Push Docker Image
+From the app/ directory:
+```bash
+docker build -t your-dockerhub-username/prometheus-demo:latest .
+docker push your-dockerhub-username/prometheus-demo:latest
+```
+## 🚀 Step 6. Deploy the App to Kubernetes
+```bash
+kubectl apply -f kubernetes-manifest/monitoring-namespace.yaml
+kubectl apply -f kubernetes-manifest/prometheus-app-deployment.yaml
+kubectl apply -f kubernetes-manifest/prometheus-app-service.yaml
+```
+## Step 7. 🔎 8. Verify Prometheus Target Discovery
+1. Open http://localhost:9090/targets
+2. You should see prometheus-demo-app under discovered targets
+3. Go to http://localhost:9090/graph and search:
+```bash
+app_requests_total
+```
+## Step 8. 📊 9. Visualize in Grafana
+1. Open http://localhost:8080
+- Username: admin
+- Password: prom-operator (default)
+2. Go to:
+- Dashboards → New → Add Panel
+- Query:
+```bash
+rate(app_requests_total[1m])
+```
+- Add visualization (e.g., graph)
+## ✅ Summary
+You now have:
+- A sample app running in K8s, exposing Prometheus metrics
+- Prometheus scraping the app
+- Grafana showing the metrics graph
