@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-demo-app
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-demo-app
+  template:
+    metadata:
+      labels:
+        app: prometheus-demo-app
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+    spec:
+      containers:
+        - name: prometheus-demo
+          image: your-dockerhub-username/prometheus-demo:latest
+          ports:
+            - containerPort: 8000
